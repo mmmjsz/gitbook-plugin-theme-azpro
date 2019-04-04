@@ -1,0 +1,86 @@
+{###
+Copyright 2019 AZPRO.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+新增 navbar.html 文件
+###}
+{% block azpro_navbar %}
+	{% set cfg = config.pluginsConfig['theme-azpro'] %}
+	{% set navbar = cfg.navbar %}
+	{% set items = navbar.nav.items %}
+	<nav class="navbar navbar-light bg-lignt fixed-top navbar-toggleable-md">
+		{% if items | length or navbar.navAjaxUrl %}
+			<button class="navbar-toggler navbar-toggler-right" type="button" 
+				data-toggle="collapse" data-target="#navbarSupportedContent" 
+				aria-controls="navbarSupportedContent" aria-expanded="false" 
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+		{% endif %}
+
+		<a class="navbar-brand" style="width:10%;" href="{{ navbar.brand.url }}">
+			{% set logo = navbar.brand.logo %}
+			{% if logo.path or logo.url %}
+				<img src="{{ logo.path|resolveAsset if logo.path else logo.url }}" 
+					height="32" class="d-inline-block align-top" 
+					alt="{{ logo.alt|d('AZPRO') }}" />
+			{% else %}
+				<img src="{{ 'images/logo.png'|resolveAsset }}" height="32" 
+					class="d-inline-block align-top" alt="{{ logo.alt|d('AZPRO') }}" />
+			{% endif%}
+		</a>
+
+		{% if items or navbar.nav %}
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<span class="mr-auto"></span>
+				<ul id="azpro-nav" class="navbar-nav text-center text-lg-left margintop15">
+					{% for item in items %}
+						{% if item.name %}
+							{% if item.links %}
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" 
+										id="navbarDropdownMenuLink{{ loop.index0 }}"
+										data-toggle="dropdown" 
+										aria-haspopup="true" aria-expanded="false" 
+										href="{{ item.url }}" >
+										{{ item.name }}
+									</a>
+									<div class="dropdown-menu text-center text-lg-left dropdown-menu-right" 
+										aria-labelledby="navbarDropdownMenuLink{{ loop.index0 }}">
+										{% for link in item.links %}
+											<a class="dropdown-item" 
+												href="{{ link.url }}">
+												{{ link.name }}
+											</a>
+										{% endfor %}
+									</div>
+								</li>
+							{% else %}
+								<li class="nav-item">
+									<a class="nav-link" href="{{ item.url }}">
+										{{ item.name }}
+									</a>
+								</li>
+							{% endif %}
+						{% endif %}
+					{% endfor %}
+				</ul>
+				<span style=""></span>
+			</div>
+			{% if navbar.navAjaxUrl %}
+				<script src="{{ 'azpro-nav.js'|resolveAsset }}" defer></script>
+			{% endif %}
+		{% endif %}
+	</nav>
+{% endblock %}
